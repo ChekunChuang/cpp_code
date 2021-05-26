@@ -1,0 +1,51 @@
+#define _CRT_SECURE_NO_WARNINGS				//VS上一般不支持直接使用scanf输入，需要加入该语句
+#include<iostream>
+#include<vector>
+#include <cstdio>
+
+using namespace std;
+typedef long long ll;
+const ll mod = 20100403;
+const int N = 2e6 + 10;    //为了防止栈溢出，数组范围一般开数据范围的二倍
+ll n, m;
+ll fac[N];
+
+void f()									//预处理组合数
+{
+	fac[1] = 1;
+	fac[0] = 1;
+	for (int i = 2; i <= N; i++)
+		fac[i] = fac[i - 1] * i % mod;
+}
+
+
+ll quickpow(ll a, ll b)
+{
+	ll ans = 1;
+	while (b > 0)
+	{
+		if (b & 1)	ans = ans * a % mod;
+		a = a * a % mod;
+		b >>= 1;
+	}
+	return ans;
+}
+
+ll c(ll x, ll y)
+{
+	ll fx = fac[x], fy = fac[y], fxy = fac[x - y];
+	fy = (fy * fxy) % mod;
+	ll d = quickpow(fy, mod - 2);			//利用费马小定理求组合数
+	fx = (fx * d) % mod;
+	return fx;
+}
+
+int main()
+{
+	f();
+
+	scanf("%lld %lld", &n, &m);
+	printf("%lld\n", (c(n + m, n) - c(n + m, n + 1) + mod) % mod);
+
+	return 0;
+}
